@@ -16,7 +16,16 @@ teaching order. It is intended for **noncommercial teaching**; see
    cd Ecommerce-Azure-Machine-Learning
    ```
 
-2. Run the checked-in setup script to unpack the nine Olist CSVs and create a
+2. Sign in to Azure on the compute instance and check the Azure ML CLI v2
+   extension. Run `az extension add --name ml --yes` only if the extension
+   lookup reports that it is missing:
+
+   ```bash
+   az login --use-device-code
+   az extension show --name ml
+   ```
+
+3. Run the checked-in setup script to unpack the nine Olist CSVs and create a
    Python environment. Set your own subscription, resource group, and workspace
    values. Azure login/permissions and VM-family quota are required for cloud
    jobs. The script must not create a workspace or notebook compute instance.
@@ -26,7 +35,7 @@ teaching order. It is intended for **noncommercial teaching**; see
      --resource-group YOUR_RESOURCE_GROUP --workspace YOUR_WORKSPACE
    ```
 
-3. Select the kernel registered by the script in Studio. Run the exercise
+4. Select the kernel registered by the script in Studio. Run the exercise
    notebooks **one cell at a time**; job submission cells start billable Azure
    compute. The bootstrap creates only the shared raw-data asset and, when
    explicitly requested, a scale-to-zero CPU cluster for RAI/sweep. Before

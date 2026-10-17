@@ -9,3 +9,7 @@ selected model. Uploads and billable submissions are disabled until explicitly
 enabled; job IDs persist in ignored `.freight-run-ids.json` so rerunning can
 reconnect instead of starting duplicates. This lab uses shared Olist CSVs, not
 the diabetes data from the MicrosoftLearning reference repository.
+For a new student workspace, set `UPLOAD_DATA = True` in notebook Step 1,
+run the data-asset cell, then set `SUBMIT_JOBS = True` and run the AutoML,
+Ridge and boosting submission cells once. The ignored run-ID file prevents
+accidental duplicate submissions on later reruns.
