@@ -1,0 +1,70 @@
+# =====================================================================================
+#  Azure ML PIPELINE JOB - data processing + training for the delivery-time model
+# -------------------------------------------------------------------------------------
+#  Submit:  az ml job create --file pipelines/delivery-time-pipeline.yml -g <rg> -w <ws>
+#
+#      olist-ecommerce-raw:1 ──► [ prep ] ──features──► [ train ] ──► trained_model
+#
+#  * Each step is a command job with its own code folder, environment and VM size.
+#  * ${{parent.jobs.prep.outputs.features}} wires the output of "prep" into "train":
+#    Azure ML stores it in the workspace storage and runs "train" after "prep".
+#  * settings.default_compute = serverless: VMs are created per step and deleted afterwards.
+#  * The pipeline output "trained_model" is what scripts/register-model.ps1 registers.
+#  Schema: https://learn.microsoft.com/azure/machine-learning/reference-yaml-job-pipeline
+# =====================================================================================
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+experiment_name: olist-delivery-time
+display_name: delivery-time-prep-and-train
+description: >-
+  Predict how many days an Olist order takes from purchase to delivery, using information
+  known at checkout. Step 1 builds one row per order; step 2 trains and compares models.
+
+settings:
+  default_compute: azureml:serverless
+
+inputs:
+  raw_data:
+    type: uri_folder
+    path: azureml:olist-ecommerce-raw:1
+  test_start: "2018-06-01"
+
+outputs:
+  trained_model:
+    type: mlflow_model
+
+jobs:
+  prep:
+    type: command
+    display_name: prep - build order features
+    code: ../src/prep
+    command: >-
+      python prep.py
+      --raw_data ${{inputs.raw_data}}
+      --output_data ${{outputs.features}}
+    environment: azureml://registries/azureml/environments/sklearn-1.5/versions/54
+    inputs:
+      raw_data: ${{parent.inputs.raw_data}}
+    outputs:
+      features:
+        type: uri_folder
+    resources:
+      instance_type: Standard_E4ds_v4
+
+  train:
+    type: command
+    display_name: train - compare models
+    code: ../src/train
+    command: >-
+      python train.py
+      --features ${{inputs.features}}
+      --test-start ${{inputs.test_start}}
+      --model_output ${{outputs.model_output}}
+    environment: azureml://registries/azureml/environments/sklearn-1.5/versions/54
+    inputs:
+      features: ${{parent.jobs.prep.outputs.features}}
+      test_start: ${{parent.inputs.test_start}}
+    outputs:
+      model_output: ${{parent.outputs.trained_model}}
+    resources:
+      instance_type: Standard_E4ds_v4
