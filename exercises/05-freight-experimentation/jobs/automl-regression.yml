@@ -1,0 +1,20 @@
+$schema: https://azuremlschemas.azureedge.net/latest/autoMLRegressionJob.schema.json
+type: automl
+task: regression
+experiment_name: olist-freight-automl
+display_name: olist-freight-automl-regression
+description: Compare regression algorithms on chronological Olist freight data.
+training_data:
+  type: mltable
+  path: azureml:olist-freight-train:1
+validation_data:
+  type: mltable
+  path: azureml:olist-freight-validation:1
+target_column_name: freight_value
+primary_metric: normalized_root_mean_squared_error
+limits:
+  max_trials: 5
+  max_concurrent_trials: 1
+  timeout_minutes: 90
+  trial_timeout_minutes: 20
+  enable_early_termination: true

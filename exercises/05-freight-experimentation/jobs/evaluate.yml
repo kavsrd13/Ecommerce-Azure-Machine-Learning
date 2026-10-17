@@ -1,0 +1,23 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+type: command
+experiment_name: olist-freight-final-evaluation
+display_name: olist-freight-held-out-test
+description: Evaluate a selected validation winner once against future orders.
+code: ../src
+command: >-
+  python evaluate.py
+  --model-dir ${{inputs.trained_model}}
+  --test ${{inputs.test_data}}
+inputs:
+  trained_model:
+    type: mlflow_model
+    path: azureml:olist-freight-regression-exp@latest
+    mode: ro_mount
+  test_data:
+    type: mltable
+    path: azureml:olist-freight-test:1
+    mode: ro_mount
+environment: azureml://registries/azureml/environments/sklearn-1.5/versions/54
+resources:
+  instance_type: Standard_E4ds_v4
+  instance_count: 1

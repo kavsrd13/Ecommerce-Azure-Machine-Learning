@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-freight-validation
+version: '1'
+type: mltable
+path: ./validation
+description: Olist item-level freight validation, April-May 2018.

@@ -1,0 +1,25 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+type: command
+experiment_name: olist-freight-mlflow
+display_name: olist-freight-ridge
+description: Compare a median baseline and Ridge with MLflow on Olist validation data.
+code: ../src
+command: >-
+  python train.py
+  --train ${{inputs.train_data}}
+  --validation ${{inputs.validation_data}}
+  --model ${{inputs.algorithm}}
+inputs:
+  train_data:
+    type: mltable
+    path: azureml:olist-freight-train:1
+    mode: ro_mount
+  validation_data:
+    type: mltable
+    path: azureml:olist-freight-validation:1
+    mode: ro_mount
+  algorithm: ridge
+environment: azureml://registries/azureml/environments/sklearn-1.5/versions/54
+resources:
+  instance_type: Standard_E4ds_v4
+  instance_count: 1

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Olist Freight | Azure ML Experimentation Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#161c2c; --muted:#536078; --blue:#304bb8; --paper:#f4f6fb; --white:#fff; --line:#dce2ee; --terminal:#111a32; --terminal-ink:#e7ecfc; --green:#176b45; --yellow:#785011; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.65 "IBM Plex Sans",system-ui,sans-serif; }
+    a { color:var(--blue); text-underline-offset:.2em; }
+    :focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+    h1,h2,h3 { font-family:Archivo,system-ui,sans-serif; line-height:1.2; letter-spacing:-.025em; }
+    h1 { font-size:clamp(2.2rem,5vw,3.7rem); margin:.35rem 0 .7rem; max-width:17ch; }
+    h2 { font-size:clamp(1.5rem,3vw,2rem); margin:0; }
+    h3 { font-size:1.08rem; margin:0; }
+    p { margin:.55rem 0; }
+    ul,ol { padding-left:1.35rem; }
+    li + li { margin-top:.35rem; }
+    code,pre { font-family:"IBM Plex Mono",Consolas,monospace; }
+    p code,li code,td code { font-size:.86em; background:#e9edfb; padding:.12em .35em; border-radius:4px; overflow-wrap:anywhere; }
+    header { background:var(--white); border-bottom:1px solid var(--line); }
+    header .inner { max-width:1200px; margin:auto; padding:3.1rem 1.5rem 2.5rem; }
+    .eyebrow { text-transform:uppercase; font-size:.76rem; font-weight:700; letter-spacing:.14em; color:var(--blue); }
+    .intro { max-width:68ch; font-size:1.12rem; color:var(--muted); }
+    .facts { display:flex; flex-wrap:wrap; gap:.7rem; margin:1.4rem 0 0; }
+    .facts span { padding:.45rem .75rem; border:1px solid var(--line); border-radius:6px; font-size:.88rem; background:var(--paper); }
+    .layout { max-width:1200px; margin:auto; padding:2.2rem 1.5rem 5rem; display:grid; grid-template-columns:225px minmax(0,1fr); gap:2.4rem; }
+    aside { align-self:start; position:sticky; top:1.5rem; }
+    aside .label { font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:.65rem; }
+    nav a { display:block; padding:.42rem .55rem; border-radius:5px; text-decoration:none; color:var(--ink); font-size:.91rem; }
+    nav a:hover,nav a:focus-visible { background:#e7ecfb; color:var(--blue); }
+    main { min-width:0; }
+    section { background:var(--white); border:1px solid var(--line); border-radius:10px; padding:clamp(1.2rem,3vw,2rem); margin-bottom:1.35rem; scroll-margin-top:1rem; }
+    .step { color:var(--blue); font-size:.74rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; margin-bottom:.4rem; }
+    .description { color:var(--muted); }
+    .callout { background:#edf2ff; border-left:4px solid var(--blue); border-radius:4px; padding:.8rem 1rem; margin:1rem 0; }
+    .callout.warn { background:#fff4df; border-color:#d49225; }
+    .callout.good { background:#e7f5ec; border-color:var(--green); }
+    .callout strong { display:block; margin-bottom:.12rem; }
+    .cmd-label { margin:1.2rem 0 .4rem; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); }
+    pre { background:var(--terminal); color:var(--terminal-ink); border-radius:7px; padding:1rem 1.1rem; font-size:.78rem; line-height:1.7; overflow-x:auto; white-space:pre; }
+    pre code { color:inherit; background:transparent; padding:0; }
+    table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.91rem; }
+    th,td { padding:.65rem .55rem; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { color:var(--muted); font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; }
+    .check { margin:1rem 0 0; border-top:1px solid var(--line); padding-top:.8rem; }
+    .check strong { color:var(--green); }
+    .small { font-size:.87rem; color:var(--muted); }
+    footer { max-width:1200px; margin:0 auto; padding:0 1.5rem 3rem; color:var(--muted); font-size:.86rem; }
+    @media(max-width:850px) { .layout { display:block; padding-top:1rem; } aside { position:static; margin:0 0 1rem; background:var(--white); padding:1rem; border:1px solid var(--line); border-radius:8px; } nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); } section { padding:1.25rem; } }
+    @media(max-width:480px) { nav { grid-template-columns:1fr; } header .inner { padding:2rem 1rem; } .layout { padding:1rem 1rem 3rem; } }
+    @media print { body { background:#fff; font-size:11pt; } header .inner,.layout { max-width:none; padding:0; } aside { display:none; } .layout { display:block; } section { border:0; border-top:1px solid #bbb; border-radius:0; break-inside:avoid; padding:1rem 0; } pre { white-space:pre-wrap; color:#111; background:#eee; } a { color:#111; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="inner">
+        <div class="eyebrow">Azure Machine Learning / Student exercise</div>
+      <h1>Find the best Olist freight model</h1>
+      <p class="intro">Replace the Microsoft Learn diabetes lab with Brazilian e-commerce data. Prepare an item-level freight table, compare AutoML regressors, track two custom models with MLflow, and evaluate the selected model on future orders.</p>
+        <div class="facts"><span>Problem: regression</span><span>Target: freight value in R$</span><span>Workspace: your configured workspace</span><span>Data: 2016-2018 Olist orders</span></div>
+    </div>
+  </header>
+  <div class="layout">
+    <aside aria-label="Lab navigation">
+      <div class="label">Follow the exercise</div>
+      <nav>
+        <a href="#overview">01 / Goal and files</a>
+        <a href="#setup">02 / Check workspace</a>
+        <a href="#prepare">03 / Prepare Olist data</a>
+        <a href="#assets">04 / Register MLTable assets</a>
+        <a href="#automl">05 / Run AutoML</a>
+        <a href="#mlflow">06 / Track MLflow models</a>
+        <a href="#compare">07 / Compare runs</a>
+        <a href="#test">08 / Final test</a>
+        <a href="#wrap">09 / Review and costs</a>
+      </nav>
+    </aside>
+    <main>
+      <section id="overview">
+        <div class="step">Step 01 / What are we solving?</div>
+        <h2>Predict shipping cost before quoting it</h2>
+        <p>One row is <strong>one order item</strong>. The target is its recorded <code>freight_value</code>. We use information available at checkout: product price, weight and dimensions, product category, seller/customer state, approximate distance, basket size and purchase month. Delivery dates and reviews are excluded because they occur later.</p>
+        <p>The <a href="https://microsoftlearning.github.io/mslearn-mlops/docs/01-experiment-evaluate-models.html">Microsoft Learn exercise</a> uses diabetes <em>classification</em>. Here the equivalent tasks are AutoML <em>regression</em> and manual regression experiments tracked by MLflow. Work only in this cloned exercise; do not run upstream infrastructure scripts.</p>
+        <table><thead><tr><th>Local file</th><th>Purpose</th></tr></thead><tbody>
+          <tr><td><code>prepare.py</code></td><td>Builds and time-splits the Olist modeling table.</td></tr>
+          <tr><td><code>data/*/MLTable</code></td><td>Describes train, validation and test tables to Azure ML.</td></tr>
+          <tr><td><code>jobs/automl-regression.yml</code></td><td>Five-trial, bounded AutoML regression experiment.</td></tr>
+          <tr><td><code>jobs/track-mlflow.yml</code></td><td>Runs Ridge or boosting on Azure ML compute with MLflow.</td></tr>
+          <tr><td><a href="Olist%20freight%20Azure%20ML%20experiments.ipynb"><code>Olist freight Azure ML experiments.ipynb</code></a></td><td>Executable companion to these steps.</td></tr>
+        </tbody></table>
+        <div class="callout warn"><strong>Cost and shared resources</strong>Cloud jobs and stored data can incur charges. Run root <code>scripts/bootstrap.py</code> first to extract shared CSVs and configure your existing workspace, then open the notebook with <strong>Python (Olist Azure ML)</strong>. Upload and submission toggles in the notebook default to <code>False</code>. Do <strong>not</strong> run upstream <code>infra/setup.sh</code>: it provisions unrelated resources.</div>
+      </section>
+
+      <section id="setup">
+        <div class="step">Step 02 / Workspace connection</div>
+        <h2>Check Azure login and target workspace</h2>
+        <p>On a Linux Azure ML compute instance, run root <a href="../../README.md">bootstrap</a> with your existing subscription, resource group and workspace; it writes ignored <code>config.json</code>, installs root <code>.venv</code> and extracts <code>datasets/olist/Ecommerce Dataset/</code>. Open the notebook from this exercise folder with the registered kernel. All CLI calls in the notebook target the configured workspace explicitly.</p>
+        <div class="cmd-label">Bash: once from the cloned repository root</div>
+        <pre><code>az login --use-device-code
+az extension show --name ml -o table  # If missing: az extension add --name ml
+python3 scripts/bootstrap.py --subscription YOUR-SUBSCRIPTION-ID \
+  --resource-group YOUR-RESOURCE-GROUP --workspace YOUR-WORKSPACE
+cd exercises/05-freight-experimentation</code></pre>
+        <div class="check"><strong>Expected:</strong> shared data exists and <code>config.json</code> names the workspace you intend to use. The notebook's step 2 checks access before any upload or submission.</div>
+      </section>
+
+      <section id="prepare">
+        <div class="step">Step 03 / Feature engineering and split</div>
+        <h2>Build the freight experiment table</h2>
+        <p>The script joins orders, items, products, customers, sellers, category translations and geolocation. It first reduces geolocation to one coordinate pair per ZIP prefix, avoiding duplicated items. It creates distance and volume, then groups all items from the same order in the same chronological split.</p>
+        <div class="cmd-label">Bash: no cloud charges</div>
+        <pre><code>../../.venv/bin/python prepare.py --raw-data '../../datasets/olist/Ecommerce Dataset'
+for split in train validation test; do test -f "data/$split/orders.csv" &amp;&amp; echo "$split ready"; done</code></pre>
+        <table><thead><tr><th>Split</th><th>Dates</th><th>Expected items</th><th>Use</th></tr></thead><tbody>
+          <tr><td>Train</td><td>Before 1 Apr 2018</td><td>75,331</td><td>Learn model parameters.</td></tr>
+          <tr><td>Validation</td><td>Apr-May 2018</td><td>15,900</td><td>Compare candidates.</td></tr>
+          <tr><td>Test</td><td>Jun-Aug 2018</td><td>21,418</td><td>Evaluate once, after selection.</td></tr>
+        </tbody></table>
+        <div class="callout"><strong>Teaching question</strong>Why is a random row-level split risky? The same order can have multiple items, and future purchase periods may differ from past periods.</div>
+      </section>
+
+      <section id="assets">
+        <div class="step">Step 04 / Versioned Azure ML data</div>
+        <h2>Register the three MLTable assets</h2>
+        <p>Each folder contains <code>orders.csv</code> and an <code>MLTable</code> definition. In the notebook, check all version 1 assets before setting <code>UPLOAD_DATA = True</code> to upload missing ones to your configured workspace. Reuse an existing asset version; never silently replace it with changed data.</p>
+        <div class="check"><strong>In Studio:</strong> Data &rarr; Data assets. Open each asset and point out its version, type and source folder.</div>
+      </section>
+
+      <section id="automl">
+        <div class="step">Step 05 / Automated model search</div>
+        <h2>Run bounded AutoML regression</h2>
+        <p>Azure ML compares up to five regression trials using the training asset and the separate April-May validation asset. The job has a 90-minute overall limit and runs only one trial at a time. Its search objective is <code>normalized_root_mean_squared_error</code>; explain that the business will also care about errors in reais.</p>
+        <p>In the notebook, set <code>SUBMIT_JOBS = True</code> only after reviewing costs and confirming all three version 1 input assets exist. A newly submitted job name is recorded in ignored <code>.freight-run-ids.json</code>; you may also populate it with names of your own existing jobs. Reruns reconnect rather than submitting duplicates.</p>
+        <div class="check"><strong>In Studio:</strong> Jobs &rarr; <code>olist-freight-automl</code> &rarr; the run &rarr; Data guardrails and Models + child jobs. Ask students why five trials are not five copies of the same model.</div>
+      </section>
+
+      <section id="mlflow">
+        <div class="step">Step 06 / Controlled comparisons</div>
+        <h2>Train Ridge and boosting with MLflow</h2>
+        <p>AutoML searches automatically. Here <code>src/train.py</code> explicitly compares a training-median baseline with one algorithm per Azure ML command job. MLflow logs parameters, validation MAE/RMSE, the percentage within R$5, and a prediction plot. The model file is attached to each Azure job.</p>
+        <p>The same guarded notebook toggle submits Ridge and boosting as separate jobs. The saved <code>ridge</code> and <code>boosting</code> job IDs belong to your configured workspace, not an instructor's subscription.</p>
+        <div class="check"><strong>In Studio:</strong> Jobs &rarr; <code>olist-freight-mlflow</code>. Open the two runs and compare <code>baseline_mae_brl</code> with <code>validation_mae_brl</code>. Show the plot under job outputs/MLflow artifacts.</div>
+      </section>
+
+      <section id="compare">
+        <div class="step">Step 07 / Explain the outcome</div>
+        <h2>Choose using validation data only</h2>
+        <p>The completed Azure ML runs found median-baseline MAE <strong>R$8.81</strong>, Ridge <strong>R$5.63</strong>, and boosting <strong>R$5.31</strong> on April-May validation rows. Boosting won the manual comparison on MAE. Ask students why the baseline still matters and why the test period was not consulted for this choice.</p>
+        <p>Use notebook step 9 to inspect the statuses of your recorded jobs without resubmitting them. Compare metrics only on the same validation period.</p>
+        <div class="callout"><strong>Teaching question</strong>AutoML minimizes normalized RMSE; the manual jobs report MAE in R$. Can we declare a winner from those two different metrics alone? No: compare candidates on the <em>same</em> metric and validation period.</div>
+      </section>
+
+      <section id="test">
+        <div class="step">Step 08 / One final look at future orders</div>
+        <h2>Register the chosen manual model and test it</h2>
+        <p>After both MLflow runs finish, choose using cloud validation MAE. In notebook step 10 set <code>selected_algorithm</code> to your winner and explicitly set <code>SUBMIT_EVALUATION = True</code> in step 1. The notebook checks that the selected job completed, registers its MLflow model once and pins its version for the held-out test job; saved IDs prevent duplicate evaluation on reruns.</p>
+        <div class="callout warn"><strong>Stop if the training status is not Completed</strong>Do not use test metrics to keep switching models. Existing evaluation job IDs must belong to the configured workspace.</div>
+        <div class="check"><strong>In Studio:</strong> Models &rarr; <code>olist-freight-regression-exp</code>; Jobs &rarr; <code>olist-freight-final-evaluation</code> &rarr; <code>test_mae_brl</code> and <code>test_rmse_brl</code>.</div>
+      </section>
+
+      <section id="wrap">
+        <div class="step">Step 09 / Discussion and housekeeping</div>
+        <h2>What did the experiment establish?</h2>
+        <ul>
+          <li>Nine raw Olist CSVs became three time-based, versioned MLTable assets.</li>
+          <li>AutoML compared regression algorithms; manual runs logged reproducible metrics and model artifacts to MLflow.</li>
+          <li>The test period measures future generalization only after model selection. It is not a fresh tuning set.</li>
+          <li>Checkout predictions still need operational validation; the ZIP-prefix distance is not a road journey.</li>
+        </ul>
+        <div class="callout warn"><strong>Shared workspace</strong>Do not delete this resource group or someone else's compute. Serverless training stops billing for its VM when the job ends; stored assets remain in the workspace. Check your jobs and compute in Azure ML Studio.</div>
+        <p class="small">If a job remains queued, inspect its run in Studio for quota or environment issues. If an asset's version already exists, use the registered version or publish a new version. For local MLflow 3.x testing, use SQLite tracking rather than the deprecated file-store backend.</p>
+      </section>
+    </main>
+  </div>
+  <footer>Adapted for the Olist e-commerce dataset from the Microsoft Learn MLOps experiment-and-evaluate exercise. Use your configured workspace and explicit notebook submission guards.</footer>
+</body>
+</html>

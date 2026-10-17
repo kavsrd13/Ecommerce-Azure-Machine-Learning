@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-freight-train
+version: '1'
+type: mltable
+path: ./train
+description: Olist item-level freight regression, purchases before April 2018.

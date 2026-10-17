@@ -1,0 +1,9 @@
+$schema: https://azuremlschemas.azureedge.net/latest/MLTable.schema.json
+type: mltable
+paths:
+  - file: ./orders.csv
+transformations:
+  - read_delimited:
+      delimiter: ','
+      header: all_files_same_headers
+      infer_column_types: true

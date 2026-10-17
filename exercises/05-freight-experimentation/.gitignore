@@ -1,0 +1,5 @@
+data/*/orders.csv
+outputs/
+mlruns/
+__pycache__/
+.freight-run-ids.json

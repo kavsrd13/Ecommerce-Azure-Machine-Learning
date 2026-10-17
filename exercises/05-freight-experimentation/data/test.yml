@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-freight-test
+version: '1'
+type: mltable
+path: ./test
+description: Olist item-level freight held-out evaluation, June-August 2018.
