@@ -1,0 +1,22 @@
+# =====================================================================================
+#  MANAGED ONLINE DEPLOYMENT - the VM(s) that actually run the model
+# -------------------------------------------------------------------------------------
+#  model               -> the registered model version to serve
+#  code_configuration  -> score.py (init + run)
+#  environment         -> Microsoft's inference base image + our conda.yaml
+#  instance_type/count -> billed per hour for as long as the deployment exists
+#  Schema: https://learn.microsoft.com/azure/machine-learning/reference-yaml-deployment-managed-online
+# =====================================================================================
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+name: blue
+endpoint_name: freight-olist   # placeholder - scripts/deploy-endpoint.ps1 replaces it with -EndpointName
+model: azureml:olist-freight-cost:1
+code_configuration:
+  code: .
+  scoring_script: score.py
+environment:
+  name: olist-freight-inference
+  image: mcr.microsoft.com/azureml/minimal-ubuntu22.04-py39-cpu-inference:latest
+  conda_file: conda.yaml
+instance_type: Standard_D2ds_v5   # 2 vCPU / 8 GB, supported for online endpoints, has quota
+instance_count: 1

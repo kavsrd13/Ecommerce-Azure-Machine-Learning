@@ -1,0 +1,15 @@
+# Inference environment for the online endpoint.
+# Python and scikit-learn match the TRAINING environment exactly (sklearn-1.5 curated env:
+# Python 3.10, scikit-learn 1.5.2), because a pickled model must be loaded with the same
+# library version it was saved with.
+name: olist-freight-inference
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - scikit-learn==1.5.2
+      - pandas==2.2.3
+      - cloudpickle==3.1.2
+      - azureml-inference-server-http   # the web server that calls init() / run()
