@@ -1,0 +1,48 @@
+# =====================================================================================
+#  Azure ML COMMAND JOB - train the Olist freight-cost model in the cloud
+# -------------------------------------------------------------------------------------
+#  Submit:   az ml job create --file jobs/train-job.yml -g rg-olist-ml-dev -w mlw-olist-dev
+#
+#  code         -> the ../src folder is uploaded and becomes the working directory
+#  inputs       -> the registered data asset is MOUNTED (read-only) into the job
+#  environment  -> Microsoft's curated scikit-learn image (pinned version = reproducible)
+#  resources    -> no "compute:" line, so Azure ML uses SERVERLESS compute: it creates a
+#                  VM for this job and deletes it afterwards. You pay only while it runs.
+#  Schema: https://learn.microsoft.com/azure/machine-learning/reference-yaml-job-command
+# =====================================================================================
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+type: command
+experiment_name: olist-freight-cost
+display_name: freight-cost-gradient-boosting
+description: >-
+  Predict the shipping cost (freight_value, BRL) of an Olist order item from product size,
+  price, seller-customer distance and the cart. Compares a median baseline, ridge regression
+  and histogram gradient boosting on a time-based test set (orders from 2018-06-01).
+
+code: ../src
+command: >-
+  python train.py
+  --data ${{inputs.olist_data}}
+  --test-start ${{inputs.test_start}}
+  --learning-rate ${{inputs.learning_rate}}
+  --max-iter ${{inputs.max_iter}}
+
+inputs:
+  olist_data:
+    type: uri_folder
+    path: azureml:olist-ecommerce-raw:1
+    mode: ro_mount
+  test_start: "2018-06-01"
+  learning_rate: 0.05
+  max_iter: 600
+
+environment: azureml://registries/azureml/environments/sklearn-1.5/versions/54
+
+resources:
+  instance_type: Standard_E4ds_v4   # 4 vCPU / 32 GB - uses the EDSv4 quota (20 vCPUs available)
+  instance_count: 1
+
+tags:
+  dataset: olist-ecommerce-raw:1
+  task: regression
+  target: freight_value
