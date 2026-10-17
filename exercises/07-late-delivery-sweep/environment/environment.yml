@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
+name: olist-sweep-env
+version: '2'
+image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04
+conda_file: ./conda.yml
+description: Workspace-owned sklearn and MLflow environment for bounded Olist sweeps.

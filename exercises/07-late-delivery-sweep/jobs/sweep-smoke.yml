@@ -1,0 +1,24 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+type: command
+experiment_name: olist-late-delivery-sweep-smoke
+display_name: olist-late-sweep-fixed-trial
+code: ../src
+command: >-
+  python sweep_train.py
+  --train ${{inputs.training_data}}
+  --validation ${{inputs.validation_data}}
+  --c 1
+  --positive-weight 3
+inputs:
+  training_data:
+    type: mltable
+    path: azureml:olist-late-sweep-train:1
+    mode: ro_mount
+  validation_data:
+    type: mltable
+    path: azureml:olist-late-sweep-validation:1
+    mode: ro_mount
+environment: azureml:olist-sweep-env:2
+compute: azureml:olist-rai-cpu
+limits:
+  timeout: 1800

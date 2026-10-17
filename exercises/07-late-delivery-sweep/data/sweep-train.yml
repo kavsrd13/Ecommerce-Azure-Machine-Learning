@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-late-sweep-train
+version: '1'
+type: mltable
+path: ./sweep-train
+description: Delivered Olist purchases before April 2018 for cloud hyperparameter tuning.

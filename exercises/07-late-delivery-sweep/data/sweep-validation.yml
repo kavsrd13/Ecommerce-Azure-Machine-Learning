@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-late-sweep-validation
+version: '1'
+type: mltable
+path: ./sweep-validation
+description: Delivered Olist purchases in April-May 2018, reserved for sweep selection.
