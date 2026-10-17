@@ -1,0 +1,12 @@
+# Bootstrap supports Python 3.10 and 3.11; mlflow 2.16.2 requires pyarrow <18.
+azure-ai-ml==1.35.1
+azure-identity==1.19.0
+folium==0.18.0
+ipykernel==6.29.5
+matplotlib==3.9.2
+mlflow==2.16.2
+numpy==1.26.4
+pandas==2.2.3
+pyarrow==17.0.0
+scikit-learn==1.5.2
+seaborn==0.13.2

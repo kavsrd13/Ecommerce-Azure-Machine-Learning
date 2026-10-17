@@ -1,0 +1,32 @@
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.azure/
+.env
+.env.*
+!.env.example
+workspace.json
+config.json
+*.key
+*.pem
+*.pfx
+*.joblib
+*.pkl
+*.db
+mlruns/
+outputs/
+local-run/
+artifacts/
+.last-*
+.deployment-outputs.json
+.gradio/
+**/data/*/*.parquet
+**/data/*/orders.csv
+**/data/raw/*.csv
+datasets/olist/Ecommerce Dataset/
+datasets/olist/olist-raw/
+Ecommerce Dataset/
+*.log
