@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-late-train
+version: '1'
+type: mltable
+path: ./train
+description: Pre-June-2018 delivered orders for late-delivery classification.

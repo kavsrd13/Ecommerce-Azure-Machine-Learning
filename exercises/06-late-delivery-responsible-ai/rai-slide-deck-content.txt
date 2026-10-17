@@ -1,0 +1,520 @@
+OLIST LATE DELIVERY: FROM CLASSIFICATION TO RESPONSIBLE AI
+PowerPoint-ready slide script | Instructor edition | 29 slides
+
+HOW TO USE THIS FILE
+Each SLIDE block contains ON-SLIDE TEXT (keep this short in PowerPoint),
+SPEAKER NOTES (expand verbally or paste into presenter notes), a VISUAL IDEA,
+and a SOURCE/DEMO cue. This is content for a slide deck, not a generated PPTX.
+The measured results below are from the completed October 2026 Azure ML lab.
+Cloud products, component versions, quotas, and screens can change.
+
+Suggested pacing: 60-75 minutes of explanation plus 20-30 minutes for the
+live Azure ML Studio walkthrough. Pause after slides 12, 18, and 26 for class
+discussion. Do not present this model as production-ready.
+
+==========================================================================
+SLIDE 01 | Title: Can we trust a late-delivery alert?
+ON-SLIDE TEXT
+- Olist e-commerce orders: predict late versus on-time delivery.
+- Train on Azure Machine Learning; inspect a Responsible AI dashboard.
+- Central question: what would happen if we acted on this model?
+SPEAKER NOTES
+We are not trying to produce an impressive accuracy number. We want to
+learn whether the classifier can support a useful, safe decision. The model
+is trained on historical Brazilian e-commerce orders and evaluated on later
+orders. A dashboard helps us inspect incorrect predictions and the signals
+behind them. It does not certify that the system is fair, accurate, or ready
+to send customer notifications.
+VISUAL IDEA: Purchase -> promised date -> delivery outcome -> model -> review.
+SOURCE/DEMO: lab-guide.html in this lab folder; official RAI guide [R1].
+
+SLIDE 02 | What students will be able to explain
+ON-SLIDE TEXT
+- Define the prediction time, label, and observation grain.
+- Interpret class imbalance and the four confusion-matrix outcomes.
+- Trace data assets -> cloud model -> registered model -> RAI pipeline.
+- Decide what further evidence is needed before deployment.
+SPEAKER NOTES
+By the end, students should be able to distinguish training a model from
+being justified in using it. They should read late-class precision and
+recall, inspect cohorts without over-interpreting them, and explain why a
+feature-importance chart is not a causal result. The hands-on HTML exercise
+provides commands; these slides provide the reasoning behind each step.
+VISUAL IDEA: Four learning outcomes in a horizontal learning path.
+SOURCE/DEMO: lab-guide.html, Steps 01-15.
+
+SLIDE 03 | Business scenario: a promised delivery date
+ON-SLIDE TEXT
+- A customer places an order and sees an estimated delivery date.
+- An operations team wants to spot orders at risk of missing that promise.
+- Possible action: human review or proactive investigation, not auto-alert.
+SPEAKER NOTES
+Imagine a seller/customer route with a tight promise and a heavy order.
+If a risk signal is reliable, staff might investigate capacity or contact a
+carrier. If it produces too many false alerts, it wastes staff time and can
+unnecessarily worry customers. Define what action the organization can
+actually take before building a classifier; our dataset does not contain
+carrier interventions or their costs, so we cannot claim a pickup point or
+notification would fix a delay.
+VISUAL IDEA: Order placed -> delivery promise -> operations review -> actual date.
+SOURCE/DEMO: Olist source dataset [R6].
+
+SLIDE 04 | Why not just report overall accuracy?
+ON-SLIDE TEXT
+- Only 672 of 18,603 future-period orders were late: 3.61%.
+- Predicting "on time" for every order yields 96.39% accuracy.
+- That trivial rule catches zero late orders.
+SPEAKER NOTES
+Ask students to calculate the majority-class accuracy: 17,931/18,603.
+That classifier looks outstanding by accuracy alone and is useless for the
+business question. We need a confusion matrix, late-class precision and
+recall, ranking quality, and an explicit discussion of error costs.
+Balanced class weighting in our demonstration emphasizes late recall but
+does not magically improve precision or calibrate probabilities.
+VISUAL IDEA: 96.39% big numeral crossed by "0 late orders found."
+SOURCE/DEMO: full Azure ML future-period test from the student's recorded training job.
+
+SLIDE 05 | Dataset: what does one row mean?
+ON-SLIDE TEXT
+- Final learning table: one row per delivered order.
+- Orders + items + products + customers + sellers + geolocation.
+- Payments and reviews are not needed for this checkout-time question.
+SPEAKER NOTES
+The public Kaggle listing describes about 100,000 anonymized Olist orders
+from 2016-2018. The raw files are related tables, not one flat CSV. Items can repeat
+an order ID; geolocation has many coordinate rows for one ZIP prefix.
+Summarize items to the order grain and aggregate coordinates by ZIP prefix
+before joining. Otherwise a naive merge multiplies observations and
+distorts the label rate. We keep a single representative seller, the seller
+of the highest-priced item in a multi-seller order. That is an approximation
+to discuss, not a perfect description of the shipping route.
+VISUAL IDEA: Compact join diagram: items -> orders <- customers; seller and ZIP lookup.
+SOURCE/DEMO: prepare.py, order/item joins and ZIP-prefix aggregation.
+
+SLIDE 06 | A precise definition of "late"
+ON-SLIDE TEXT
+- Label: late_delivery = 1 if actual delivery DATE > promised DATE.
+- Same-day arrival counts as on time, even after midnight.
+- Only delivered orders with a known actual date have this label.
+SPEAKER NOTES
+The estimated delivery timestamp is recorded as a date boundary. Comparing
+raw timestamps would incorrectly mark a package delivered during its
+promised day as late. We normalize both timestamps to their calendar dates
+before comparing them. Canceled, undelivered, or right-censored orders
+have no comparable outcome and are excluded. That exclusion creates
+selection bias: the trained population is not every possible new order.
+VISUAL IDEA: Promise Oct 10; arrival Oct 10 16:00 -> on time; Oct 11 -> late.
+SOURCE/DEMO: prepare.py, label construction.
+
+SLIDE 07 | The decision-time rule prevents leakage
+ON-SLIDE TEXT
+- Use only facts known when the order is placed.
+- Inputs: states, promise length, distance, basket count/price/weight, month.
+- Never use actual delivery date, post-purchase status, or review score.
+SPEAKER NOTES
+The actual delivery date is used to construct the historical label, not to
+predict a future order. ZIP-prefix Haversine distance is an approximation,
+not road travel time. "promised_days" is valid only if the promise is
+available at the proposed prediction moment. It is also tightly linked to
+the definition of the outcome: changing the promised date can change the
+label without changing how fast the parcel moves. This is important when
+interpreting its contribution in the RAI dashboard.
+VISUAL IDEA: Two columns: "known at checkout" versus "learned afterward."
+SOURCE/DEMO: prepare.py FEATURES; src/train.py FEATURES.
+
+SLIDE 08 | Feature engineering is part of the experiment
+ON-SLIDE TEXT
+- Count items; sum item prices and product weights per order.
+- Approximate route with customer/seller ZIP-prefix coordinates.
+- Calculate straight-line distance; impute missing distance from TRAIN only.
+SPEAKER NOTES
+Seller and customer states remain categorical inputs. We calculate
+promised_days from estimated date minus purchase timestamp, and
+purchase_month from purchase timestamp. Four hundred seventy-six orders
+in the prepared order-level data lack distance; we fill both splits from
+the training median, not from future test values. The script performs
+validated joins and asserts uniqueness of order ID. A missing product
+weight can become zero after a sum in this simple lab, so a production
+system needs more rigorous missingness review.
+VISUAL IDEA: Before/after feature table for a single order.
+SOURCE/DEMO: prepare.py, FEATURES and distance-median code.
+
+SLIDE 09 | A chronological split, not a random shuffle
+ON-SLIDE TEXT
+- Train: before June 2018; 77,867 orders; 7.53% late.
+- Future test: June-August 2018; 18,603 orders; 3.61% late.
+- Separate RAI samples: 2,500 train and 3,000 test rows.
+SPEAKER NOTES
+Grouping at the order level ensures that two items from the same purchase
+cannot cross the boundary. The late rate nearly halves across periods:
+class prevalence and decision thresholds may not transfer. The test set
+reports the model's full-period performance. The stratified RAI samples
+bound the cost of explanations and retain class proportions: 188 late
+among 2,500 training rows and 108 late among 3,000 dashboard test rows.
+Do not mistake a dashboard sample metric for the full 18,603-row result.
+VISUAL IDEA: Timeline with train and future-test bands plus two sample icons.
+SOURCE/DEMO: prepare.py; outputs from the verified preparation script.
+
+SLIDE 10 | Model: simple enough to audit
+ON-SLIDE TEXT
+- Logistic regression with class_weight="balanced".
+- One-hot encode customer and seller states; scale numeric columns.
+- Save the entire preprocessing + predictor pipeline as an MLflow model.
+SPEAKER NOTES
+This is intentionally not a black-box model search. The pipeline accepts
+the original tabular feature columns and implements predict and
+predict_proba. Balancing the training classes increases attention to rare
+late orders, but it can substantially increase false alerts. The pipeline,
+not just the LogisticRegression coefficients, is saved so the Azure RAI
+components receive the same input schema the model was trained on.
+VISUAL IDEA: Raw columns -> OneHot/StandardScaler -> LogisticRegression -> risk.
+SOURCE/DEMO: src/train.py; jobs/train.yml.
+
+SLIDE 11 | Interpret the confusion matrix
+ON-SLIDE TEXT
+- True late predicted late (TP): 521; late missed (FN): 151.
+- On time predicted late (FP): 7,860; correctly on time (TN): 10,071.
+- 8,381 of 18,603 orders were flagged as late.
+SPEAKER NOTES
+Ask: which cell is most costly in an operational workflow? A false negative
+misses a possible delay; a false positive can waste work or alarm a
+customer. The model flags 45.05% of orders, although only 3.61% truly
+arrived late. The four counts sum to 18,603; TP + FN equals the 672 actual
+late orders. These cloud-run results are observations at the default model
+decision rule, not a recommended threshold for use with customers.
+VISUAL IDEA: 2x2 confusion matrix with FP and FN highlighted separately.
+SOURCE/DEMO: the student's recorded Azure ML run, full-test MLflow metrics.
+
+SLIDE 12 | Precision and recall tell different stories
+ON-SLIDE TEXT
+- Late recall = 521 / 672 = 77.53%.
+- Late precision = 521 / 8,381 = 6.22%.
+- ROC-AUC = 0.704; average precision = 0.088.
+SPEAKER NOTES
+Recall asks: of the orders that really were late, how many did we catch?
+Precision asks: of all orders we flagged, how many really were late?
+Average precision is 8.8%, above the 3.6% future-period prevalence, so
+the risk ranking contains signal, but the current decision rule is poor
+for automatic alerts. Accuracy at this rule is 56.94%, lower than the
+trivial 96.39% majority-class accuracy. These figures are compatible:
+class imbalance and error costs make a single metric misleading.
+VISUAL IDEA: Two side-by-side fractions; shaded baseline prevalence.
+SOURCE/DEMO: src/train.py logged MLflow metrics; full-test job output.
+
+SLIDE 13 | What is Responsible AI in this lesson?
+ON-SLIDE TEXT
+- Ask who and what is affected by model errors.
+- Investigate reliability, transparency, and error disparities.
+- Treat the Azure dashboard as evidence for review, not certification.
+SPEAKER NOTES
+Responsible AI requires a defined human purpose and accountability for
+mistakes. Azure Machine Learning's Responsible AI dashboard brings
+model/data overview, cohort comparisons, error analysis, and explanations
+into an inspectable workflow for supported tabular models. It does not
+guarantee fairness, safety, privacy, or causal validity. Here the main
+stakeholders are customers and operations staff who might act on a risk
+flag. A high false-alert count is itself an operational harm to consider.
+VISUAL IDEA: Model at center; customer, operations, and audit arrows.
+SOURCE/DEMO: Azure dashboard concepts [R2]; viewing [R3]; fairness [R11].
+
+SLIDE 14 | Define the dashboard's questions first
+ON-SLIDE TEXT
+- Reliability: where are false negatives and false positives concentrated?
+- Transparency: which features influence this model's risk scores?
+- Cohorts and data: do errors or feature distributions change by location?
+SPEAKER NOTES
+We configure the dashboard to answer specific questions, not simply to
+produce attractive charts. An error difference in a geographic cohort
+requires sample counts, route context, and further investigation. We do
+not have a protected-class attribute or evidence that a state directly
+caused an error. Also ask whether the price of a false alert is higher
+than the cost of a missed delay before considering changes to a threshold.
+VISUAL IDEA: Three questions mapped to overview, error analysis, explanation.
+SOURCE/DEMO: jobs/rai-dashboard.yml, error_analysis and explain steps.
+
+SLIDE 15 | Model overview, data, and cohorts
+ON-SLIDE TEXT
+- View classification outcomes on labeled dashboard data.
+- Compare precision, recall, selection rate, and group sample size.
+- A small cohort's rate can vary substantially by chance.
+SPEAKER NOTES
+The dashboard is given 3,000 future-period test rows, not all 18,603.
+Only 108 of those rows are late. If a state has very few late orders,
+one mistake can cause a large percentage change. Model overview and
+cohort filters help find questions to investigate. Data analysis views can
+show feature distributions and observed versus predicted outcomes. A
+selection rate describes the fraction flagged by the model, not the true
+late rate. These views do not justify
+declaring one state unfairly treated from a small sample or from an
+unadjusted rate. Compare precision, recall, false-positive and
+false-negative behavior with counts and operational context.
+VISUAL IDEA: Overall metrics card next to two cohort cards with n values.
+SOURCE/DEMO: Azure Studio dashboard UI [R3]; data/rai-test/MLTable.
+
+SLIDE 16 | Error analysis: find failure pockets
+ON-SLIDE TEXT
+- An error tree splits data into segments with different error rates.
+- A heat map compares errors across one or two selected features.
+- Distinguish a cohort's error rate from its share of all errors.
+SPEAKER NOTES
+Use the error tree to ask whether certain routes, distances, or customer
+states are overrepresented among incorrect predictions. Inspect the
+number of rows behind each branch before trusting it. Error RATE means
+wrong predictions divided by orders IN the cohort; error COVERAGE means
+that cohort's wrong predictions divided by ALL wrong predictions. The
+configured heat-map filters are customer_state and distance_km. An error pocket
+is not necessarily a causal mechanism: seller practices, carrier delays,
+promise policy, and season can all be confounded. The current lab
+computes error analysis on a bounded sample and gathers it into the
+registered model's dashboard.
+VISUAL IDEA: Schematic error tree alongside a state-by-distance heat map.
+SOURCE/DEMO: jobs/rai-dashboard.yml error_analysis; RAI [R1]; errors [R10].
+
+SLIDE 17 | Explanations: global versus local
+ON-SLIDE TEXT
+- Global: what inputs does the fitted model generally rely on?
+- Local: what influenced one selected prediction?
+- Influence is not proof that changing a feature changes delivery speed.
+SPEAKER NOTES
+For a particular high-risk order, inspect the features used in its score.
+For the overall model, check whether promised_days, route distance, and
+state are influential in sensible ways. One-hot encoding turns each state
+into model-level indicators; the dashboard receives the original state
+columns and the full preprocessing pipeline. An explanation describes
+the model, not what a carrier would do if a seller moved or a delivery
+promise changed. Confirm important features were known at prediction time.
+VISUAL IDEA: One global contribution chart and one single-order explanation.
+SOURCE/DEMO: jobs/rai-dashboard.yml explain; model explainability [R1].
+
+SLIDE 18 | Tools we intentionally did not run
+ON-SLIDE TEXT
+- No counterfactual: "change customer state" is not an action.
+- No causal analysis: observational Olist data lacks a defined intervention.
+- No fairness certification: geographic cohorts are not protected traits.
+SPEAKER NOTES
+Azure provides optional counterfactual and causal components for supported
+scenarios, but being able to execute a component is not evidence that its
+result is meaningful. Changing promised_days may mechanically change what
+"late" means; it is not the same as accelerating transport. A causal
+claim would require an intervention, assumptions about confounders, and
+appropriate study design. Restrict this introductory dashboard to error
+analysis and explanations, which we can interpret responsibly. Microsoft
+labels the separate no-code Studio generation experience public preview;
+our exercise uses the CLI v2 pipeline, not that no-code creation flow.
+VISUAL IDEA: Two optional branches off the pipeline, labeled "requires design."
+SOURCE/DEMO: current pipeline excludes both; RAI component and concept guides
+[R1] [R7] [R8]; preview status [R9].
+
+SLIDE 19 | Azure ML architecture at a glance
+ON-SLIDE TEXT
+- Kaggle CSVs -> local preparation -> four Parquet-backed MLTables.
+- Azure ML cloud training -> MLflow sklearn model -> registered model v1.
+- RAI constructor -> error analysis + explanation -> gather -> Studio.
+SPEAKER NOTES
+The four data assets are full train, full test, sampled RAI train, and
+sampled RAI test. The cloud training job uses the full train and full
+future test; the RAI pipeline uses the smaller sampled datasets. The
+registered model is a complete scikit-learn pipeline, not a bare pickle.
+The RAI constructor loads that model and data; two analysis components
+run; gather assembles a dashboard associated with the registered model.
+Everything is versioned in Azure ML to aid reproducibility.
+VISUAL IDEA: Three-lane diagram: Local data | Azure ML assets/jobs | Studio RAI.
+SOURCE/DEMO: jobs/train.yml, jobs/rai-dashboard.yml, MLTable files.
+
+SLIDE 20 | Implementation 1: local setup and data
+ON-SLIDE TEXT
+- Run root scripts/bootstrap.py to install the shared Linux .venv kernel.
+- Verify shared Olist CSVs under datasets/olist/Ecommerce Dataset/.
+- Run prepare.py; check row counts and late proportions.
+SPEAKER NOTES
+The student HTML exercise uses a Linux Azure ML compute-instance terminal.
+Root bootstrap extracts nine related CSVs, but this classifier
+reads only the six needed for orders, items, products, customer/seller
+locations, and geolocation. The script prepares four Parquet tables with
+matching original feature names and a binary target. It does not require
+another course folder. Avoid uploading
+the full raw archive when prepared assets suffice.
+VISUAL IDEA: Folder tree: shared datasets/olist -> exercise data/{train,test,rai-train,rai-test}.
+SOURCE/DEMO: lab-guide.html Steps 02-05; Kaggle source [R6].
+
+SLIDE 21 | Implementation 2: Azure workspace and compute
+ON-SLIDE TEXT
+- Authenticate Azure CLI v2 and check the existing configured workspace.
+- Create the one-node CPU cluster only if needed, using bootstrap --create-cluster.
+- Confirm region, VM-family quota, permissions, and charges.
+SPEAKER NOTES
+Students use the workspace named by root config.json. Cloud VM size and
+component availability vary by region and quota. The lab uses an
+E4ds_v4 CPU size and a cluster that scales to zero after work. Azure
+workspace storage and cloud job runtime can still cost money. Running
+the student guide against the wrong shared workspace could damage someone
+else's assets; confirm identifiers before registering assets or submitting jobs.
+VISUAL IDEA: Azure subscription -> resource group -> workspace -> compute.
+SOURCE/DEMO: lab-guide.html Steps 06-08; workspace/CLI docs [R4] [R5].
+
+SLIDE 22 | Implementation 3: version the four data assets
+ON-SLIDE TEXT
+- MLTable wraps each Parquet split for Azure ML jobs.
+- Register train, test, rai-train, and rai-test as version 1.
+- Never silently overwrite an immutable dataset version.
+SPEAKER NOTES
+The MLTable definitions tell Azure ML how to read the Parquet files.
+Separate asset versions make train/test boundaries explicit in the
+cloud job specifications. The sampled dashboard inputs preserve class
+proportions but do not replace full-data model evaluation. If the
+underlying data or preparation changes, publish new asset versions and
+update job YAML references together. Inspect Data assets in Studio to
+show students the uploaded files and their versions.
+VISUAL IDEA: Four asset cards, two full and two small.
+SOURCE/DEMO: data/*/MLTable, data/*.yml; lab-guide.html Step 09.
+
+SLIDE 23 | Implementation 4: cloud training and MLflow
+ON-SLIDE TEXT
+- jobs/train.yml sends code + MLTable inputs to Azure ML compute.
+- Training logs parameters, test metrics and a sklearn MLflow artifact.
+- Register the finished outputs/model as olist-late-delivery-rai:1.
+SPEAKER NOTES
+Wait for the training job to complete before registering its output.
+Model packaging matters: Azure's RAI components require a loadable
+registered MLflow model with the sklearn flavor and original DataFrame
+feature names. Record the student's own job ID for later read-only status checks.
+It was trained in the same responsibleai-tabular environment family as
+the dashboard components to avoid pickle/dependency incompatibilities.
+MLflow logs provide an auditable record of the numbers on slides 11-12.
+VISUAL IDEA: Azure ML job page -> MLflow metrics -> registered model v1.
+SOURCE/DEMO: src/train.py; jobs/train.yml; lab-guide.html Steps 10-11.
+
+SLIDE 24 | Implementation 5: assemble the dashboard
+ON-SLIDE TEXT
+- Constructor: model + labeled RAI train/test assets.
+- Error analysis and explanations: two independent insights.
+- Gather: publish a dashboard linked to the registered model.
+SPEAKER NOTES
+The pipeline YAML pins verified Azure ML registry components
+rai_tabular_* version 0.22.0. The constructor receives the registered
+model identifier, target late_delivery and JSON-encoded categorical
+columns customer_state/seller_state. Error analysis filters by state
+and distance. The explanation stage analyzes model behavior. Gather
+assembles the outputs and writes model association metadata. In the
+reference workspace, pipeline strong_boniato_bg6hyssyyf completed all
+four stages, and its gather run recorded model_id olist-late-delivery-rai:1.
+VISUAL IDEA: Four-node DAG with two parallel middle nodes.
+SOURCE/DEMO: jobs/rai-dashboard.yml; official construction guide [R1].
+
+SLIDE 25 | Live Studio walkthrough
+ON-SLIDE TEXT
+- Data assets: four versions; Jobs: train run and RAI pipeline.
+- Models: olist-late-delivery-rai, version 1.
+- Responsible AI: overview -> error analysis -> explanations.
+SPEAKER NOTES
+Begin at ml.azure.com and select the correct workspace. Open the model's
+Responsible AI tab and select "Olist late-delivery error analysis."
+Show the title, registered model version, cohort size and then the error
+tree/heat map. Select an incorrectly classified example to discuss
+what an explanation does and does not say. Some dynamic what-if features
+may require a running compute instance; the generated static dashboard
+does not require starting one for this discussion. If the interface
+differs from the slides, use the named job and model assets to navigate.
+VISUAL IDEA: Numbered screenshot placeholders for Studio navigation.
+SOURCE/DEMO: Azure viewing guide [R3]; reference pipeline run ID above.
+
+SLIDE 26 | What we can responsibly conclude today
+ON-SLIDE TEXT
+- Ranking has some signal; the default decision rule is not acceptable.
+- Recall 77.5%, but precision 6.2% and 7,860 false alerts.
+- Do not automate customer-facing warnings from this run.
+SPEAKER NOTES
+For this historical sample the model detects many delays, but the false
+alert burden is far too large for unreviewed notifications. The result
+could motivate a lower-volume, human-reviewed investigation workflow;
+that decision requires a separate business cost analysis, calibration,
+and prospective evaluation. Do not claim the dashboard itself improved
+the model: it made risks visible. A deployment decision needs explicit
+threshold, acceptable error budgets and governance approval.
+VISUAL IDEA: Red/amber/green launch gate, with this model held at amber.
+SOURCE/DEMO: full future-period confusion matrix; RAI objective.
+
+SLIDE 27 | Important limitations and safer next experiment
+ON-SLIDE TEXT
+- Delivered-only training omits canceled and still-undelivered orders.
+- 2016-2018 data and a changing late rate limit current relevance.
+- Create train/validation/test time windows before threshold tuning.
+SPEAKER NOTES
+The RAI test sample has only 108 late examples, so small-state slices
+are uncertain. Geographic distance is ZIP-prefix straight-line distance
+and the multi-seller route is simplified. If promised_days was not known
+when a proposed alert would be issued, the model needs to be rebuilt.
+The current demonstration logs future-test metrics but has no separate
+validation period for threshold selection. To improve it, define an
+earlier validation window, choose a threshold against measured alert
+capacity, and reserve a later untouched test period for one final check.
+VISUAL IDEA: Risk register with data, model, and deployment columns.
+SOURCE/DEMO: prepare.py; Azure RAI supported scenarios/limits [R2].
+
+SLIDE 28 | Discussion and assessment
+ON-SLIDE TEXT
+- Why is 96.39% majority-class accuracy not success?
+- What do 7,860 false alerts mean operationally?
+- Which dashboard observation requires another experiment?
+SPEAKER NOTES
+Ask each student to explain the denominator in precision versus recall.
+Then have them find a geographic or distance cohort in the dashboard,
+record its sample size, and propose one plausible follow-up analysis
+without claiming causation. Their answer should distinguish a model
+explanation from a real-world intervention. An acceptable conclusion is
+"do not deploy yet; test a revised decision rule on newer data."
+VISUAL IDEA: Three classroom prompts with space for live answers.
+SOURCE/DEMO: lab-guide.html, Step 13 student submission checklist.
+
+SLIDE 29 | References and reusable lab files
+ON-SLIDE TEXT
+- Public Olist data; Azure ML CLI/workspace; RAI pipeline and viewer docs.
+- Local exercise: lab-guide.html, prepare.py, src/train.py, jobs/*.yml.
+- Reference assets: model olist-late-delivery-rai:1; RAI pipeline completed.
+SPEAKER NOTES
+Use these official sources when creating the final PPT bibliography.
+The file paths are relative to the olist-rai-late-delivery lab folder.
+Microsoft documentation can evolve; this script describes the verified
+October 2026 implementation and should not be treated as a permanent
+list of component names or quotas. The Kaggle dataset's terms and the
+institution's data-handling policies should be reviewed before reuse.
+VISUAL IDEA: Three resource cards and one QR code pointing at the lab folder.
+SOURCE/DEMO: Links below.
+
+REFERENCE LINKS
+[R1] Azure ML: Create Responsible AI insights by SDK or CLI:
+https://learn.microsoft.com/en-us/azure/machine-learning/how-to-responsible-ai-insights-sdk-cli?view=azureml-api-2
+[R2] Azure ML: Responsible AI dashboard concepts, support and limitations:
+https://learn.microsoft.com/en-us/azure/machine-learning/concept-responsible-ai-dashboard?view=azureml-api-2
+[R3] Azure ML: View a Responsible AI dashboard in Studio:
+https://learn.microsoft.com/en-us/azure/machine-learning/how-to-responsible-ai-dashboard?view=azureml-api-2
+[R4] Azure ML: Install and configure CLI v2:
+https://learn.microsoft.com/en-us/azure/machine-learning/how-to-configure-cli?view=azureml-api-2
+[R5] Azure ML: Manage workspaces:
+https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-workspace?view=azureml-api-2
+[R6] Kaggle: Brazilian E-Commerce Public Dataset by Olist:
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+[R7] Azure ML: Counterfactual analysis and what-if:
+https://learn.microsoft.com/en-us/azure/machine-learning/concept-counterfactual-analysis?view=azureml-api-2
+[R8] Azure ML: Causal inference assumptions:
+https://learn.microsoft.com/en-us/azure/machine-learning/concept-causal-inference?view=azureml-api-2
+[R9] Azure ML: Generate RAI insights in the Studio UI (preview):
+https://learn.microsoft.com/en-us/azure/machine-learning/how-to-responsible-ai-insights-ui?view=azureml-api-2
+[R10] Azure ML: Error analysis concepts and error coverage:
+https://learn.microsoft.com/en-us/azure/machine-learning/concept-error-analysis?view=azureml-api-2
+[R11] Azure ML: Model fairness guidance:
+https://learn.microsoft.com/en-us/azure/machine-learning/concept-fairness-ml?view=azureml-api-2
+
+LOCAL REPRODUCTION FILES (inside olist-rai-late-delivery/)
+- lab-guide.html: complete student instructions, setup through interpretation.
+- prepare.py: join, label, feature preparation and temporal split.
+- src/train.py: sklearn/MLflow classification and full-test metrics.
+- data/{train,test,rai-train,rai-test}/MLTable: versioned data layout.
+- jobs/{train,rai-compute,rai-dashboard}.yml: Azure ML jobs/cluster/pipeline.
+
+PRESENTER'S FINAL CAUTION
+The dashboard exposes model behavior and observed errors; it does not
+guarantee that this model is responsible, fair, causal, current, or fit
+for customer-facing decisions. An actual launch needs newer data,
+threshold/cost analysis, representative cohorts, human accountability,
+and prospective monitoring.

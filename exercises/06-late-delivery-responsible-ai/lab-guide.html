@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Olist Late Delivery | Responsible AI Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#171d2d; --muted:#536078; --blue:#304bb8; --paper:#f4f6fb; --white:#fff; --line:#dce2ee; --terminal:#111a32; --terminal-ink:#e7ecfc; --green:#176b45; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.65 "IBM Plex Sans",system-ui,sans-serif; }
+    a { color:var(--blue); text-underline-offset:.2em; }
+    :focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+    h1,h2,h3 { font-family:Archivo,system-ui,sans-serif; line-height:1.2; letter-spacing:-.025em; }
+    h1 { font-size:clamp(2.2rem,5vw,3.5rem); margin:.35rem 0 .7rem; max-width:19ch; }
+    h2 { font-size:clamp(1.45rem,3vw,2rem); margin:0; }
+    h3 { font-size:1.1rem; }
+    p { margin:.6rem 0; }
+    ul,ol { padding-left:1.35rem; }
+    li + li { margin-top:.35rem; }
+    code,pre { font-family:"IBM Plex Mono",Consolas,monospace; }
+    p code,li code,td code { font-size:.86em; background:#e9edfb; padding:.12em .35em; border-radius:4px; overflow-wrap:anywhere; }
+    header { background:var(--white); border-bottom:1px solid var(--line); }
+    header .inner { max-width:1200px; margin:auto; padding:3rem 1.5rem 2.5rem; }
+    .eyebrow { text-transform:uppercase; font-size:.76rem; font-weight:700; letter-spacing:.14em; color:var(--blue); }
+    .intro { max-width:68ch; font-size:1.12rem; color:var(--muted); }
+    .facts { display:flex; flex-wrap:wrap; gap:.7rem; margin:1.4rem 0 0; }
+    .facts span { padding:.45rem .75rem; border:1px solid var(--line); border-radius:6px; font-size:.88rem; background:var(--paper); }
+    .layout { max-width:1200px; margin:auto; padding:2.2rem 1.5rem 5rem; display:grid; grid-template-columns:225px minmax(0,1fr); gap:2.4rem; }
+    aside { align-self:start; position:sticky; top:1.5rem; }
+    aside .label { font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:.65rem; }
+    nav a { display:block; padding:.4rem .55rem; border-radius:5px; text-decoration:none; color:var(--ink); font-size:.9rem; }
+    nav a:hover,nav a:focus-visible { background:#e7ecfb; color:var(--blue); }
+    main { min-width:0; }
+    section { background:var(--white); border:1px solid var(--line); border-radius:10px; padding:clamp(1.2rem,3vw,2rem); margin-bottom:1.35rem; scroll-margin-top:1rem; }
+    .step { color:var(--blue); font-size:.74rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; margin-bottom:.4rem; }
+    .callout { background:#edf2ff; border-left:4px solid var(--blue); border-radius:4px; padding:.8rem 1rem; margin:1rem 0; }
+    .callout.warn { background:#fff4df; border-color:#d49225; }
+    .callout.good { background:#e7f5ec; border-color:var(--green); }
+    .callout strong { display:block; margin-bottom:.12rem; }
+    .cmd-label { margin:1.2rem 0 .4rem; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); }
+    pre { background:var(--terminal); color:var(--terminal-ink); border-radius:7px; padding:1rem 1.1rem; font-size:.78rem; line-height:1.7; overflow-x:auto; white-space:pre; }
+    pre code { color:inherit; background:transparent; padding:0; }
+    table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:.91rem; }
+    th,td { padding:.65rem .55rem; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { color:var(--muted); font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; }
+    .check { margin:1rem 0 0; border-top:1px solid var(--line); padding-top:.8rem; }
+    .check strong { color:var(--green); }
+    .small { font-size:.88rem; color:var(--muted); }
+    footer { max-width:1200px; margin:0 auto; padding:0 1.5rem 3rem; color:var(--muted); font-size:.86rem; }
+    @media(max-width:850px) { .layout { display:block; padding-top:1rem; } aside { position:static; margin:0 0 1rem; background:var(--white); padding:1rem; border:1px solid var(--line); border-radius:8px; } nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); } section { padding:1.25rem; } }
+    @media(max-width:480px) { nav { grid-template-columns:1fr; } header .inner { padding:2rem 1rem; } .layout { padding:1rem 1rem 3rem; } }
+    @media print { body { background:#fff; font-size:11pt; } header .inner,.layout { max-width:none; padding:0; } aside { display:none; } .layout { display:block; } section { border:0; border-top:1px solid #bbb; border-radius:0; break-inside:avoid; padding:1rem 0; } pre { white-space:pre-wrap; color:#111; background:#eee; } a { color:#111; } }
+  </style>
+</head>
+<body>
+  <header><div class="inner">
+    <div class="eyebrow">Azure Machine Learning / Student exercise</div>
+    <h1>Can we trust a late-delivery alert?</h1>
+    <p class="intro">Start with the Kaggle Olist CSVs. Train a binary classifier on Azure ML, register its MLflow model, and generate a Responsible AI dashboard to investigate false alerts, missed delays, and model explanations.</p>
+    <div class="facts"><span>One row: one delivered order</span><span>Target: late = 1</span><span>Linux compute instance + Azure CLI v2</span><span>Azure resources are billable</span></div>
+  </div></header>
+  <div class="layout">
+    <aside aria-label="Lab navigation"><div class="label">Follow in order</div><nav>
+      <a href="#goal">01 / Learning goal</a>
+      <a href="#files">02 / Get exercise files</a>
+      <a href="#python">03 / Python environment</a>
+      <a href="#dataset">04 / Shared Olist data</a>
+      <a href="#prepare">05 / Prepare and inspect</a>
+      <a href="#azure">06 / Azure CLI and login</a>
+      <a href="#workspace">07 / Check workspace</a>
+      <a href="#compute">08 / Check compute</a>
+      <a href="#assets">09 / Register data</a>
+      <a href="#training">10 / Train in Azure</a>
+      <a href="#model">11 / Register the model</a>
+      <a href="#dashboard">12 / Build RAI dashboard</a>
+      <a href="#interpret">13 / Interpret results</a>
+      <a href="#cleanup">14 / Clean up</a>
+      <a href="#help">15 / Troubleshooting</a>
+    </nav></aside>
+    <main>
+      <section id="goal">
+        <div class="step">Step 01 / Learning objective</div><h2>Investigate errors, not just accuracy</h2>
+        <p>At checkout, can we identify orders likely to arrive <strong>after</strong> the promised calendar date? We train a <strong>class-balanced logistic regression</strong> model. A model that predicts every order is on time can appear accurate because late orders are uncommon; it would miss the very cases we care about.</p>
+        <p>The Responsible AI dashboard should help answer: <strong>Which late orders are missed?</strong> How many on-time orders are falsely flagged? Do errors differ across customer/seller states or journey distances? Which available-at-checkout features influence a prediction?</p>
+        <div class="callout warn"><strong>What this does not prove</strong>State is a geographic error cohort, not a protected attribute or proof of discrimination. Explanations describe model behavior, not causal effects. The dataset is historical, and canceled or undelivered orders are excluded, so this is not a production-ready customer notification system.</div>
+        <p class="small">Plan for 2-3 hours of active instruction plus training time. Use an existing Azure ML workspace with permission to register assets and submit jobs; cluster creation requires additional permissions and quota. Cloud compute and storage incur charges.</p>
+      </section>
+
+      <section id="files">
+        <div class="step">Step 02 / Exercise package</div><h2>Open the cloned exercise folder</h2>
+        <p>In an Azure ML Linux compute-instance terminal, clone the course repository and open <code>exercises/06-late-delivery-responsible-ai</code>. Keep <code>prepare.py</code>, <code>src/train.py</code>, <code>jobs/*.yml</code>, and all four <code>data/*/MLTable</code> files together. The repository root also supplies <code>scripts/bootstrap.py</code> and the shared <code>datasets/olist/Ecommerce Dataset.zip</code>.</p>
+        <table><thead><tr><th>Path in the lab folder</th><th>What it does</th></tr></thead><tbody>
+          <tr><td><code>prepare.py</code></td><td>Creates one row per delivered order, a date-corrected late label, and chronological splits.</td></tr>
+          <tr><td><code>data/{train,test,rai-train,rai-test}/MLTable</code></td><td>Defines four Parquet-backed Azure ML datasets. <code>data.parquet</code> is generated later.</td></tr>
+          <tr><td><code>jobs/train.yml</code> + <code>src/train.py</code></td><td>Runs the classifier on Azure ML and logs test metrics with MLflow.</td></tr>
+          <tr><td><code>scripts/compute.yml</code> + <code>jobs/rai-dashboard.yml</code></td><td>Optional bootstrap compute configuration and four-step dashboard pipeline.</td></tr>
+        </tbody></table>
+        <div class="cmd-label">Bash: from the cloned repository root</div>
+        <pre><code>cd exercises/06-late-delivery-responsible-ai
+pwd
+test -f prepare.py &amp;&amp; test -f jobs/rai-dashboard.yml &amp;&amp; echo 'Exercise files ready'</code></pre>
+        <div class="check"><strong>Expected:</strong> <code>Exercise files ready</code>. Keep this terminal in the exercise folder for later relative paths.</div>
+      </section>
+
+      <section id="python">
+        <div class="step">Step 03 / Shared environment</div><h2>Use bootstrap's repository virtual environment</h2>
+        <p>From the repository root, follow the <a href="../../README.md">shared bootstrap instructions</a> once with your existing workspace identifiers. It extracts nine CSVs, installs root <code>.venv</code> and the <strong>Python (Olist Azure ML)</strong> notebook kernel, writes ignored <code>config.json</code>, and registers raw asset <code>olist-ecommerce-raw:1</code>. The optional <code>--create-cluster</code> flag provisions <code>olist-rai-cpu</code>; omit it until compute is actually needed. Bootstrap does not create a workspace.</p>
+        <div class="cmd-label">Bash: after Step 02, return to the repository root (replace placeholders)</div>
+        <pre><code>cd ../..
+az login --use-device-code
+az extension show --name ml -o table  # If missing: az extension add --name ml
+python3 scripts/bootstrap.py --subscription YOUR-SUBSCRIPTION-ID \
+  --resource-group YOUR-RESOURCE-GROUP --workspace YOUR-WORKSPACE
+cd exercises/06-late-delivery-responsible-ai
+PY="$(realpath ../../.venv/bin/python)"
+"$PY" -c "import pandas, sklearn, pyarrow; print('Python environment ready')"</code></pre>
+        <details><summary>Optional Windows/PowerShell alternative</summary><p>On Windows, use <code>py -3.11 -m venv .venv</code> and <code>&amp; .\.venv\Scripts\python.exe -m pip install -r ..\..\scripts\requirements.txt</code> from this folder. Supply the shared CSV path with <code>--raw-data</code> and use the same workspace identifiers in every <code>az ml</code> call. The Linux bootstrap path above is the default for this repository.</p></details>
+      </section>
+
+      <section id="dataset">
+        <div class="step">Step 04 / Public Olist data</div><h2>Verify bootstrap's shared CSVs</h2>
+        <p>The <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce">Olist Kaggle dataset</a> is already packaged as <code>datasets/olist/Ecommerce Dataset.zip</code> in the course repository. Bootstrap extracts and verifies all nine CSVs under <code>datasets/olist/Ecommerce Dataset/</code>; do not download or duplicate them into this exercise's <code>data/raw</code> folder.</p>
+        <div class="cmd-label">Bash: read-only checks from this exercise folder</div>
+        <pre><code>test -f '../../datasets/olist/Ecommerce Dataset/olist_orders_dataset.csv' &amp;&amp; \
+  test -f '../../datasets/olist/Ecommerce Dataset/olist_geolocation_dataset.csv' &amp;&amp; \
+  echo 'Shared Olist CSVs ready'</code></pre>
+        <div class="check"><strong>Expected:</strong> <code>Shared Olist CSVs ready</code>. Preparation needs the orders, items, products, customers, sellers and geolocation CSVs.</div>
+      </section>
+
+      <section id="prepare">
+        <div class="step">Step 05 / Data and target</div><h2>Prepare four time-split datasets</h2>
+        <p>The script keeps orders marked <code>delivered</code> with an actual date. It summarizes their items to one row per order, joins customer/seller ZIP-prefix coordinates, and engineers <code>distance_km</code>, basket size, order price and weight, purchase month, and <code>promised_days</code>. For a multi-seller order, it uses the seller of the highest-priced item as an approximate route. The target is <code>late_delivery = 1</code> only when the actual <strong>calendar date</strong> is after the estimated delivery date. A package arriving later <em>on</em> its promised date is not late.</p>
+        <p>Training uses purchases before 1 June 2018; test uses June-August 2018. Missing distances are filled using the <em>training</em> median. Smaller stratified copies are used only for the dashboard so explanations finish in reasonable time.</p>
+        <div class="cmd-label">Bash: no Azure charges in this step</div>
+        <pre><code>"$PY" prepare.py
+for split in train test rai-train rai-test; do
+  test -f "data/$split/data.parquet" &amp;&amp; echo "$split ready"
+done</code></pre>
+        <table><thead><tr><th>Split</th><th>Expected rows</th><th>Late orders</th><th>Purpose</th></tr></thead><tbody>
+          <tr><td>train</td><td>77,867</td><td>5,862 (7.5%)</td><td>Fit the model.</td></tr>
+          <tr><td>test</td><td>18,603</td><td>672 (3.6%)</td><td>Full future-period evaluation.</td></tr>
+          <tr><td>rai-train</td><td>2,500</td><td>188</td><td>Bound dashboard explanation time.</td></tr>
+          <tr><td>rai-test</td><td>3,000</td><td>108</td><td>Display future-period cohorts.</td></tr>
+        </tbody></table>
+        <div class="callout"><strong>Teaching question</strong>Why is 96% accuracy possible without catching a single late delivery? Compare the positive-class recall and false alerts later. The shift from 7.5% late in train to 3.6% in test also deserves investigation.</div>
+      </section>
+
+      <section id="azure">
+        <div class="step">Step 06 / Cloud prerequisites</div><h2>Verify Azure CLI and sign in</h2>
+        <p>The Linux compute instance needs <a href="https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux">Azure CLI</a> and its <a href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-configure-cli?view=azureml-api-2">Azure ML CLI v2 extension</a>; the Python virtual environment does not install <code>az</code>. Bootstrap checks CLI access to the existing workspace.</p>
+        <div class="cmd-label">Bash: install the ml extension only if missing</div>
+        <pre><code>az version
+az extension show --name ml -o table   # If missing: az extension add --name ml
+az login --use-device-code            # Or use az login when a browser is available.</code></pre>
+        <p>Never put credentials, tokens or service-principal secrets in the exercise YAML or <code>config.json</code>. Use the workspace and subscription configured during bootstrap.</p>
+      </section>
+
+      <section id="workspace">
+        <div class="step">Step 07 / Existing workspace</div><h2>Check the configured Azure ML workspace</h2>
+        <p>Bootstrap wrote <code>config.json</code> at the repository root with <code>subscription_id</code>, <code>resource_group</code> and <code>workspace_name</code>. These are identifiers, not credentials. Load them in this shell; do not create a resource group or workspace for this lab.</p>
+        <div class="cmd-label">Bash: read-only workspace check</div>
+        <pre><code>ROOT="$(realpath ../..)"
+read -r SUB RG WS &lt; &lt;("$PY" -c 'import json,sys; c=json.load(open(sys.argv[1])); print(c["subscription_id"], c["resource_group"], c["workspace_name"])' "$ROOT/config.json")
+az ml workspace show -n "$WS" -g "$RG" --subscription "$SUB" --query '{name:name,location:location}' -o json</code></pre>
+        <div class="callout warn"><strong>Costs</strong>Workspace-associated storage and the cluster's VM can incur charges. The RAI pipeline is for a classroom exercise, not a free-tier guarantee.</div>
+      </section>
+
+      <section id="compute">
+        <div class="step">Step 08 / One-node compute</div><h2>Check the scale-to-zero cluster</h2>
+        <p>The shared bootstrap optionally creates <code>olist-rai-cpu</code> with <code>Standard_E4ds_v4</code>, a maximum of one node and zero-node minimum. Check it first; if missing, explicitly rerun bootstrap from the repository root with <code>--skip-install --create-cluster</code> and the same three workspace identifiers. Training uses serverless compute of the same VM family. Check quota before opting in to compute creation; if unavailable, adjust the compute configuration and training VM together.</p>
+        <div class="cmd-label">Bash: read-only cluster check</div>
+        <pre><code>az ml compute show -n olist-rai-cpu -g "$RG" -w "$WS" --subscription "$SUB" --query '{name:name,min:min_instances,max:max_instances}' -o json</code></pre>
+        <div class="cmd-label">Optional: only if missing and after reviewing quota and charges</div>
+        <pre><code>( cd "$ROOT" &amp;&amp; python3 scripts/bootstrap.py --skip-install --create-cluster \
+    --subscription "$SUB" --resource-group "$RG" --workspace "$WS" )</code></pre>
+        <div class="check"><strong>Expected:</strong> <code>min: 0</code>, <code>max: 1</code>. It can take time for an idle node to scale down after the pipeline finishes.</div>
+      </section>
+
+      <section id="assets">
+        <div class="step">Step 09 / Register four MLTables</div><h2>Upload prepared data, not the raw Kaggle archive</h2>
+        <p>Each data folder contains a Parquet file and an <code>MLTable</code> definition. The four YAMLs point at those folders. Check version <code>1</code> first and upload only missing assets after verifying the configured workspace; never overwrite an existing version with new local data. Both the model and RAI constructor require the same feature names and binary label.</p>
+        <div class="cmd-label">Bash: read-only version 1 checks</div>
+        <pre><code>for split in train test rai-train rai-test; do
+  az ml data show -n "olist-late-$split" -v 1 -g "$RG" -w "$WS" --subscription "$SUB" -o table
+done</code></pre>
+        <div class="cmd-label">Optional: upload only missing splits after checking the lookup error</div>
+        <pre><code>az ml data create -f data/train.yml -g "$RG" -w "$WS" --subscription "$SUB"
+# Repeat separately with test.yml, rai-train.yml, rai-test.yml if missing.</code></pre>
+        <div class="check"><strong>In Azure ML Studio:</strong> open <strong>Data &gt; Data assets</strong>; locate <code>olist-late-train</code>, <code>olist-late-test</code>, <code>olist-late-rai-train</code>, and <code>olist-late-rai-test</code>, all version 1.</div>
+      </section>
+
+      <section id="training">
+        <div class="step">Step 10 / Cloud training</div><h2>Train the classifier on Azure ML</h2>
+        <p>The command job runs <code>src/train.py</code> on cloud compute. It one-hot encodes the two state columns, scales six numeric features, and fits class-balanced logistic regression. MLflow logs ROC-AUC, average precision, late-class precision/recall, and confusion counts on the <strong>full</strong> future-period test set. The environment is pinned to the RAI components' <code>responsibleai-tabular:28</code> runtime so the dashboard can load the saved model.</p>
+        <div class="cmd-label">Bash: opt-in billable training job; keep the returned ID</div>
+        <pre><code>TRAIN_JOB=$(az ml job create -f jobs/train.yml -g "$RG" -w "$WS" --subscription "$SUB" --query name -o tsv)
+printf '%s\n' "$TRAIN_JOB"
+az ml job show -n "$TRAIN_JOB" -g "$RG" -w "$WS" --subscription "$SUB" --query status -o tsv</code></pre>
+        <p>Do not rerun the creation command to check progress. In a new shell set <code>TRAIN_JOB='YOUR-JOB-ID'</code> using your recorded job name and rerun only <code>job show</code>.</p>
+        <p>Open <a href="https://ml.azure.com/">Azure ML Studio</a> and inspect <strong>Jobs &gt; olist-late-delivery-rai</strong>. Wait until the job says <code>Completed</code>, then rerun the read-only status command above. The CLI's live <code>job stream</code> command may produce an <code>Incorrect padding</code> error even when the job succeeds; rely on Studio or <code>job show</code>.</p>
+        <div class="callout"><strong>Evaluation objective</strong>A rare-event classifier needs more than accuracy. Higher late recall can come with more false alerts. Decide whether false notifications or missed delays matter more before deploying anything.</div>
+      </section>
+
+      <section id="model">
+        <div class="step">Step 11 / Registered model</div><h2>Register the trained MLflow model</h2>
+        <p>Run this <strong>only after</strong> <code>TRAIN_JOB</code> is <code>Completed</code>. The job saved the sklearn-flavored MLflow pipeline to <code>outputs/model</code>. The RAI constructor requires a registered <code>mlflow_model</code>, not a bare pickle. Check whether version 1 already exists first; if so confirm it came from your selected training job rather than registering another version without updating the pipeline.</p>
+        <div class="cmd-label">Bash: read-only version 1 check</div>
+        <pre><code>az ml model show -n olist-late-delivery-rai -v 1 -g "$RG" -w "$WS" --subscription "$SUB" -o json</code></pre>
+        <div class="cmd-label">Optional: register only if missing and the source job completed</div>
+        <pre><code>MODEL_PATH="azureml://jobs/$TRAIN_JOB/outputs/artifacts/paths/outputs/model/"
+az ml model create -n olist-late-delivery-rai -v 1 --type mlflow_model --path "$MODEL_PATH" -g "$RG" -w "$WS" --subscription "$SUB"</code></pre>
+        <div class="check"><strong>Expected:</strong> model version <code>1</code> in your workspace. If using a different version, change <strong>both</strong> <code>selected_model.path</code> and <code>construct.inputs.model_info</code> in <code>jobs/rai-dashboard.yml</code> before submission.</div>
+      </section>
+
+      <section id="dashboard">
+        <div class="step">Step 12 / Responsible AI pipeline</div><h2>Generate error analysis and explanations</h2>
+        <p><code>jobs/rai-dashboard.yml</code> wires four official components: <strong>construct</strong> the dashboard, run <strong>error analysis</strong>, compute <strong>explanations</strong>, then <strong>gather</strong> them. It uses stratified 2,500-row training and 3,000-row test samples for insight generation, not the full-size evaluation set. The pinned <code>rai_tabular_*</code> components are version <code>0.22.0</code>; check your region's Azure ML registry if a version is unavailable.</p>
+        <div class="cmd-label">Bash: opt-in billable four-step pipeline; keep the returned ID</div>
+        <pre><code>RAI_JOB=$(az ml job create -f jobs/rai-dashboard.yml -g "$RG" -w "$WS" --subscription "$SUB" --query name -o tsv)
+printf '%s\n' "$RAI_JOB"
+az ml job show -n "$RAI_JOB" -g "$RG" -w "$WS" --subscription "$SUB" --query status -o tsv
+az ml job list -p "$RAI_JOB" -g "$RG" -w "$WS" --subscription "$SUB" --query '[].{step:display_name,status:status}' -o table</code></pre>
+        <p>For later status checks, reuse <code>RAI_JOB='YOUR-JOB-ID'</code>; never rerun <code>job create</code> just to reconnect. The four <code>rai_tabular_*</code> components remain pinned to <code>0.22.0</code>.</p>
+        <p>Wait for all four steps to reach <code>Completed</code>. In Studio, go to <strong>Models &gt; olist-late-delivery-rai &gt; Version 1 &gt; Responsible AI</strong> and select <strong>Olist late-delivery error analysis</strong>. A compute instance may be needed for some <em>interactive</em> what-if features, but the precomputed dashboard does not require you to start one.</p>
+        <div class="callout warn"><strong>Do not add causal or counterfactual components blindly</strong>Changing a promised date changes the definition of lateness; changing a customer's state is not a practical intervention. This exercise uses explanations and observed-error cohorts, not claims that a feature caused a delivery delay.</div>
+      </section>
+
+      <section id="interpret">
+        <div class="step">Step 13 / Student interpretation</div><h2>Explain what the dashboard reveals</h2>
+        <p>First check <strong>Model overview</strong> for late-class recall, precision, and confusion counts. Then compare error cohorts by <code>customer_state</code> and <code>distance_km</code>. Inspect cohort sample sizes before concluding anything about a small state. Finally, use <strong>Explanations</strong> to identify the inputs the model relies on, especially <code>promised_days</code>, which is closely linked to the target definition and must really be known when the prediction is made.</p>
+        <table><thead><tr><th>Question</th><th>Evidence to record</th></tr></thead><tbody>
+          <tr><td>Does it catch late orders?</td><td>Late recall, false negatives, and the underlying number of late orders.</td></tr>
+          <tr><td>Would it bother on-time customers?</td><td>Late precision and false positives at the current threshold.</td></tr>
+          <tr><td>Where do errors change?</td><td>State/distance cohort rates <em>and</em> sample sizes; avoid causal conclusions.</td></tr>
+          <tr><td>Can we trust the explanation?</td><td>Confirm features were known at checkout; note the promised date's policy effect.</td></tr>
+        </tbody></table>
+        <p>In the instructor's reference run the future-period late rate was <strong>3.6%</strong>; the model caught <strong>521 of 672</strong> late orders but incorrectly flagged <strong>7,860</strong> on-time orders. Your values should be close with the same files and environment. That is a reason to <strong>withhold automatic customer alerts</strong> and improve the decision rule, not to claim success from recall alone.</p>
+        <div class="callout"><strong>Submit your findings</strong>Record the training and RAI job IDs, registered model version, late precision/recall and confusion counts, one adequately sized cohort observation, one explanation, and a recommendation on whether to deploy or revise.</div>
+      </section>
+
+      <section id="cleanup">
+        <div class="step">Step 14 / Cost control</div><h2>Check compute before leaving</h2>
+        <p>The cluster has a zero-node minimum and should scale down after its idle period. Verify job completion and compute configuration. Saved datasets, model versions, and workspace storage still exist. If you created a <strong>dedicated</strong> resource group for this lab and no longer need it, delete it through the Azure portal after checking its contents; do not delete an instructor's shared workspace.</p>
+        <div class="cmd-label">Bash: read-only checks</div>
+        <pre><code>az ml job show -n "$RAI_JOB" -g "$RG" -w "$WS" --subscription "$SUB" --query status -o tsv
+az ml compute show -n olist-rai-cpu -g "$RG" -w "$WS" --subscription "$SUB" --query '{min:min_instances,max:max_instances}' -o json
+az resource list -g "$RG" --subscription "$SUB" -o table</code></pre>
+      </section>
+
+      <section id="help">
+        <div class="step">Step 15 / Common blockers and references</div><h2>Diagnose a blocked step</h2>
+        <table><thead><tr><th>Symptom</th><th>What to check</th></tr></thead><tbody>
+          <tr><td><code>python3</code> or <code>.venv/bin/python</code> not found</td><td>Run repository bootstrap on Linux with Python 3.10 or 3.11; install the matching Python venv package if needed.</td></tr>
+          <tr><td>Missing Olist CSV</td><td>Check <code>datasets/olist/Ecommerce Dataset.zip</code> and rerun root <code>scripts/bootstrap.py</code> to extract the shared CSVs.</td></tr>
+          <tr><td><code>az ml</code> not recognized</td><td>Verify the Azure CLI installation and run <code>az extension add --name ml</code>.</td></tr>
+          <tr><td>Workspace or compute quota error</td><td>Check configured workspace access, region, available CPU size, and Azure ML VM-family quota. Align bootstrap's cluster size and <code>jobs/train.yml</code> if changed.</td></tr>
+          <tr><td>Asset version already exists</td><td>Reuse it or use a new version consistently in all job YAMLs; do not assume version 1 points to new local files.</td></tr>
+          <tr><td>Dashboard cannot load model</td><td>Verify the model is registered as <code>mlflow_model</code> with an <code>sklearn</code> flavor and was trained in the pinned RAI environment.</td></tr>
+        </tbody></table>
+        <p class="small">References: <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce">Olist dataset</a>, <a href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-configure-cli?view=azureml-api-2">Azure ML CLI v2</a>, <a href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-workspace?view=azureml-api-2">workspace management</a>, <a href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-responsible-ai-insights-sdk-cli?view=azureml-api-2&amp;tabs=yaml">RAI pipeline components</a>, and <a href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-responsible-ai-dashboard?view=azureml-api-2">viewing a dashboard in Studio</a>. Component availability and quotas vary by region and subscription.</p>
+      </section>
+    </main>
+  </div>
+  <footer>Student exercise built from the public Olist dataset. Reuse your configured workspace without deleting shared resources; interpret Responsible AI results as diagnostics, not deployment approval.</footer>
+</body>
+</html>

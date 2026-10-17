@@ -1,0 +1,23 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+type: command
+experiment_name: olist-late-delivery-rai
+display_name: olist-late-classifier
+description: Train a simple classification pipeline and log full future-period metrics.
+code: ../src
+command: >-
+  python train.py
+  --train ${{inputs.training_data}}
+  --test ${{inputs.test_data}}
+inputs:
+  training_data:
+    type: mltable
+    path: azureml:olist-late-train:1
+    mode: ro_mount
+  test_data:
+    type: mltable
+    path: azureml:olist-late-test:1
+    mode: ro_mount
+environment: azureml://registries/azureml/environments/responsibleai-tabular/versions/28
+resources:
+  instance_type: Standard_E4ds_v4
+  instance_count: 1

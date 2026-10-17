@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-late-test
+version: '1'
+type: mltable
+path: ./test
+description: Held-out June-August-2018 delivered orders for model evaluation.

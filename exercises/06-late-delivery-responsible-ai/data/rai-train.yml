@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-late-rai-train
+version: '1'
+type: mltable
+path: ./rai-train
+description: Stratified 2500-order training sample for a bounded RAI dashboard.

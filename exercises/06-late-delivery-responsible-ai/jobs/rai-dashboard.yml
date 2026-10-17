@@ -1,0 +1,55 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+experiment_name: olist-late-delivery-responsible-ai
+display_name: olist-late-delivery-rai-dashboard
+description: Inspect late-class prediction errors and explanations on future Olist orders.
+compute: azureml:olist-rai-cpu
+inputs:
+  training_data:
+    type: mltable
+    path: azureml:olist-late-rai-train:1
+  test_data:
+    type: mltable
+    path: azureml:olist-late-rai-test:1
+  selected_model:
+    type: mlflow_model
+    path: azureml:olist-late-delivery-rai:1
+outputs:
+  dashboard:
+    type: uri_folder
+    mode: upload
+jobs:
+  construct:
+    type: command
+    component: azureml://registries/azureml/components/rai_tabular_insight_constructor/versions/0.22.0
+    inputs:
+      title: Olist late-delivery error analysis
+      task_type: classification
+      target_column_name: late_delivery
+      model_info: olist-late-delivery-rai:1
+      model_input: ${{parent.inputs.selected_model}}
+      train_dataset: ${{parent.inputs.training_data}}
+      test_dataset: ${{parent.inputs.test_data}}
+      categorical_column_names: '["customer_state", "seller_state"]'
+      maximum_rows_for_test_dataset: 3000
+  error_analysis:
+    type: command
+    component: azureml://registries/azureml/components/rai_tabular_erroranalysis/versions/0.22.0
+    inputs:
+      rai_insights_dashboard: ${{parent.jobs.construct.outputs.rai_insights_dashboard}}
+      filter_features: '["customer_state", "distance_km"]'
+  explain:
+    type: command
+    component: azureml://registries/azureml/components/rai_tabular_explanation/versions/0.22.0
+    inputs:
+      comment: Explain when the model flags a delivery as late.
+      rai_insights_dashboard: ${{parent.jobs.construct.outputs.rai_insights_dashboard}}
+  gather:
+    type: command
+    component: azureml://registries/azureml/components/rai_tabular_insight_gather/versions/0.22.0
+    inputs:
+      constructor: ${{parent.jobs.construct.outputs.rai_insights_dashboard}}
+      insight_1: ${{parent.jobs.error_analysis.outputs.error_analysis}}
+      insight_2: ${{parent.jobs.explain.outputs.explanation}}
+    outputs:
+      dashboard: ${{parent.outputs.dashboard}}

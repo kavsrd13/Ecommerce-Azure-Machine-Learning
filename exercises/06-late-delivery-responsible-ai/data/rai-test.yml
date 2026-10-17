@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: olist-late-rai-test
+version: '1'
+type: mltable
+path: ./rai-test
+description: Stratified 3000-order future-period sample for RAI insights.
